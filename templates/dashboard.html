@@ -12,13 +12,13 @@
   </div>
 </section>
 <section class="row g-3 mb-4 mb-lg-5" aria-label="Vault categories">
-  <div class="col-md-4"><div class="card p-3 p-lg-4 h-100"><div class="d-flex align-items-center gap-3"><div class="section-icon"><i class="bi bi-person-vcard"></i></div><div><h2 class="h6 fw-bold mb-1">Identity &amp; Insurance</h2><p class="small text-muted mb-0">ID cards and insurance records</p></div></div></div></div>
-  <div class="col-md-4"><div class="card p-3 p-lg-4 h-100"><div class="d-flex align-items-center gap-3"><div class="section-icon"><i class="bi bi-file-medical"></i></div><div><h2 class="h6 fw-bold mb-1">Medical Documents &amp; Personal Health Logs</h2><p class="small text-muted mb-0">Reports, prescriptions, results, and logs</p></div></div></div></div>
-  <div class="col-md-4"><div class="card p-3 p-lg-4 h-100"><div class="d-flex align-items-center gap-3"><div class="section-icon"><i class="bi bi-camera-video"></i></div><div><h2 class="h6 fw-bold mb-1">Health Videos</h2><p class="small text-muted mb-0">Personal health-related videos</p></div></div></div></div>
+  <div class="col-md-4"><a href="{{ url_for('category_view', category_key='id_card') }}" class="text-decoration-none text-reset"><div class="card p-3 p-lg-4 h-100"><div class="d-flex align-items-center gap-3"><div class="section-icon"><i class="bi bi-person-vcard"></i></div><div><h2 class="h6 fw-bold mb-1">Identity &amp; Insurance</h2><p class="small text-muted mb-0">ID cards and insurance records</p></div></div></div></a></div>
+  <div class="col-md-4"><a href="{{ url_for('category_view', category_key='document') }}" class="text-decoration-none text-reset"><div class="card p-3 p-lg-4 h-100"><div class="d-flex align-items-center gap-3"><div class="section-icon"><i class="bi bi-file-medical"></i></div><div><h2 class="h6 fw-bold mb-1">Medical Documents &amp; Personal Health Logs</h2><p class="small text-muted mb-0">Reports, prescriptions, results, and logs</p></div></div></div></a></div>
+  <div class="col-md-4"><a href="{{ url_for('category_view', category_key='video') }}" class="text-decoration-none text-reset"><div class="card p-3 p-lg-4 h-100"><div class="d-flex align-items-center gap-3"><div class="section-icon"><i class="bi bi-camera-video"></i></div><div><h2 class="h6 fw-bold mb-1">Health Videos</h2><p class="small text-muted mb-0">Personal health-related videos</p></div></div></div></a></div>
 </section>
 <div class="row g-4 align-items-stretch">
   <div class="col-xl-5">
-    <section class="card p-4 p-lg-4 h-100">
+    <section id="upload" class="card p-4 p-lg-4 h-100">
       <div class="card-header-clean"><div class="section-icon"><i class="bi bi-cloud-arrow-up"></i></div><div><h2 class="h5 fw-bold mb-1">Add a file</h2><p class="small text-muted mb-0">Encrypt it before saving to your vault.</p></div></div>
       <form method="POST" enctype="multipart/form-data" class="needs-validation">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

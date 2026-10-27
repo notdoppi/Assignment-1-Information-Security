@@ -5,9 +5,9 @@ import re
 import unicodedata
 
 CATEGORIES = {
-    "id_card":  "ID card image (KTP / passport / driving licence)",
-    "document": "Document (PDF / DOC / XLS)",
-    "video":    "Video file",
+    "id_card":  "Identity & Insurance",
+    "document": "Medical Documents & Personal Health Logs",
+    "video":    "Health Videos",
 }
 # extension -> canonical MIME type, per category
 ALLOWED = {

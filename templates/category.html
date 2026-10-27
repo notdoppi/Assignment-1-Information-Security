@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ category_label }} · Health Vault{% endblock %}
+{% block content %}
+<section class="mb-4">
+  <a href="{{ url_for('dashboard') }}" class="small-link"><i class="bi bi-arrow-left me-1"></i> Back to overview</a>
+  <div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between gap-3 mt-3">
+    <div><div class="eyebrow mb-2">Your personal health vault</div><h1 class="h2 fw-bold mb-2">{{ category_label }}</h1><p class="text-muted mb-0">Browse and retrieve the files you have stored in this category.</p></div>
+    <span class="badge rounded-pill px-3 py-2" style="background:#e4f5f1;color:#167d78"><i class="bi bi-lock-fill me-1"></i> Private to your account</span>
+  </div>
+</section>
+<section class="card p-3 p-lg-4">
+  <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-3"><div><h2 class="h5 fw-bold mb-1">Stored files</h2><p class="small text-muted mb-0">{{ files|length }} file{% if files|length != 1 %}s{% endif %} in this category</p></div><a href="{{ url_for('dashboard') }}#upload" class="btn btn-primary-hv"><i class="bi bi-cloud-arrow-up me-2"></i>Add a file</a></div>
+  <div class="table-responsive"><table class="table align-middle"><thead><tr><th>File</th><th>Added</th><th>Encryption</th><th>Size</th><th class="text-end">Actions</th></tr></thead><tbody>
+  {% for f in files %}<tr><td><div class="file-name" title="{{ f.original_filename }}">{{ f.original_filename }}</div><div class="small text-muted">Encrypted at rest</div></td><td class="small text-muted">{{ f.uploaded_at }}</td><td><span class="algorithm-badge">{{ f.algorithm }}</span></td><td><span class="small">{{ f.plaintext_size|filesizeformat }}</span><div class="small text-muted">{{ f.ciphertext_size|filesizeformat }} encrypted</div></td><td class="text-end" style="min-width:155px"><form action="{{ url_for('decrypt_file', file_id=f.id) }}" method="POST" class="d-flex gap-1 justify-content-end mb-2"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="password" name="password" placeholder="File password" aria-label="Password to download {{ f.original_filename }}" class="form-control form-control-sm" style="min-width:95px;max-width:130px" required><button type="submit" class="btn btn-sm btn-outline-hv" title="Decrypt and download" aria-label="Decrypt and download {{ f.original_filename }}"><i class="bi bi-download"></i></button></form><form action="{{ url_for('delete_file', file_id=f.id) }}" method="POST" class="text-end" onsubmit="return confirm('Delete this file from your vault? This cannot be undone.')"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit" class="btn btn-sm btn-outline-danger" aria-label="Delete {{ f.original_filename }}"><i class="bi bi-trash3 me-1"></i>Delete</button></form></td></tr>
+  {% else %}<tr><td colspan="5"><div class="empty-state"><span class="empty-icon"><i class="bi bi-folder2-open"></i></span><h3 class="h6 fw-bold">No files in this category yet</h3><p class="small mb-0">Upload a file from the dashboard and select this category.</p></div></td></tr>{% endfor %}
+  </tbody></table></div>
+</section>
+{% endblock %}

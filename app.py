@@ -294,6 +294,21 @@ def create_app(test_config: dict | None = None) -> Flask:
         session.clear()
         return redirect(url_for("login"))
 
+    @app.route("/category/<category_key>")
+    @login_required
+    def category_view(category_key):
+        if category_key not in CATEGORIES:
+            abort(404)
+        rows = get_db().execute(
+            "SELECT id, original_filename, category, mime_type, algorithm, plaintext_size, ciphertext_size, uploaded_at, group_id "
+            "FROM encrypted_files WHERE user_id = ? AND category = ? ORDER BY id DESC",
+            (session["user_id"], category_key),
+        ).fetchall()
+        return render_template(
+            "category.html", files=rows, category_key=category_key,
+            category_label=CATEGORIES[category_key]
+        )
+
     return app
 
 
