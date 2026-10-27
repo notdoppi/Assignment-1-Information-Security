@@ -5,56 +5,318 @@
   <div class="row align-items-end g-3">
     <div class="col-lg-8">
       <div class="eyebrow mb-2">Your personal space</div>
-      <h1 class="display-6 fw-bold mb-2">Your health files. <span style="color:var(--hv-teal)">Your control.</span></h1>
-      <p class="text-muted mb-0" style="max-width:690px">A private place to organize identity records, medical documents, personal health logs, and health videos. Upload, encrypt, and retrieve your files when you need them.</p>
+      <h1 class="display-6 fw-bold mb-2">
+        Your health files.
+        <span style="color:var(--hv-teal)">Your control.</span>
+      </h1>
+      <p class="text-muted mb-0" style="max-width:690px">
+        A private place to organize identity records, medical documents,
+        personal health logs, and health videos. Upload, encrypt, and retrieve
+        your files when you need them.
+      </p>
     </div>
-    <div class="col-lg-4 text-lg-end"><span class="badge rounded-pill px-3 py-2" style="background:#e4f5f1;color:#167d78"><i class="bi bi-lock-fill me-1"></i> Personal storage · Encrypted files</span></div>
+    <div class="col-lg-4 text-lg-end">
+      <span class="badge rounded-pill px-3 py-2"
+            style="background:#e4f5f1;color:#167d78">
+        <i class="bi bi-lock-fill me-1"></i>
+        Personal storage · Encrypted files
+      </span>
+    </div>
   </div>
 </section>
+
 <section class="row g-3 mb-4 mb-lg-5" aria-label="Vault categories">
-  <div class="col-md-4"><a href="{{ url_for('category_view', category_key='id_card') }}" class="text-decoration-none text-reset"><div class="card p-3 p-lg-4 h-100"><div class="d-flex align-items-center gap-3"><div class="section-icon"><i class="bi bi-person-vcard"></i></div><div><h2 class="h6 fw-bold mb-1">Identity &amp; Insurance</h2><p class="small text-muted mb-0">ID cards and insurance records</p></div></div></div></a></div>
-  <div class="col-md-4"><a href="{{ url_for('category_view', category_key='document') }}" class="text-decoration-none text-reset"><div class="card p-3 p-lg-4 h-100"><div class="d-flex align-items-center gap-3"><div class="section-icon"><i class="bi bi-file-medical"></i></div><div><h2 class="h6 fw-bold mb-1">Medical Documents &amp; Personal Health Logs</h2><p class="small text-muted mb-0">Reports, prescriptions, results, and logs</p></div></div></div></a></div>
-  <div class="col-md-4"><a href="{{ url_for('category_view', category_key='video') }}" class="text-decoration-none text-reset"><div class="card p-3 p-lg-4 h-100"><div class="d-flex align-items-center gap-3"><div class="section-icon"><i class="bi bi-camera-video"></i></div><div><h2 class="h6 fw-bold mb-1">Health Videos</h2><p class="small text-muted mb-0">Personal health-related videos</p></div></div></div></a></div>
+  <div class="col-md-4">
+    <a href="{{ url_for('category_view', category_key='id_card') }}"
+       class="text-decoration-none text-reset">
+      <div class="card p-3 p-lg-4 h-100">
+        <div class="d-flex align-items-center gap-3">
+          <div class="section-icon">
+            <i class="bi bi-person-vcard"></i>
+          </div>
+          <div>
+            <h2 class="h6 fw-bold mb-1">Identity &amp; Insurance</h2>
+            <p class="small text-muted mb-0">
+              ID cards and insurance records
+            </p>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-md-4">
+    <a href="{{ url_for('category_view', category_key='document') }}"
+       class="text-decoration-none text-reset">
+      <div class="card p-3 p-lg-4 h-100">
+        <div class="d-flex align-items-center gap-3">
+          <div class="section-icon">
+            <i class="bi bi-file-medical"></i>
+          </div>
+          <div>
+            <h2 class="h6 fw-bold mb-1">
+              Medical Documents &amp; Personal Health Logs
+            </h2>
+            <p class="small text-muted mb-0">
+              Reports, prescriptions, results, and logs
+            </p>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-md-4">
+    <a href="{{ url_for('category_view', category_key='video') }}"
+       class="text-decoration-none text-reset">
+      <div class="card p-3 p-lg-4 h-100">
+        <div class="d-flex align-items-center gap-3">
+          <div class="section-icon">
+            <i class="bi bi-camera-video"></i>
+          </div>
+          <div>
+            <h2 class="h6 fw-bold mb-1">Health Videos</h2>
+            <p class="small text-muted mb-0">
+              Personal health-related videos
+            </p>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
 </section>
+
 <div class="row g-4 align-items-stretch">
   <div class="col-xl-5">
     <section id="upload" class="card p-4 p-lg-4 h-100">
-      <div class="card-header-clean"><div class="section-icon"><i class="bi bi-cloud-arrow-up"></i></div><div><h2 class="h5 fw-bold mb-1">Add a file</h2><p class="small text-muted mb-0">Encrypt it before saving to your vault.</p></div></div>
-      <form method="POST" enctype="multipart/form-data" class="needs-validation">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <div class="mb-3"><label for="file" class="form-label">Choose a file</label><input id="file" type="file" name="file" class="form-control" required><div class="form-text text-muted">Choose a supported document, image, or MP4 video.</div></div>
-        <div class="mb-3"><label for="file_type" class="form-label">Vault category</label><select id="file_type" name="file_type" class="form-select" required>{% for key, label in CATEGORIES.items() %}<option value="{{ key }}">{{ label }}</option>{% endfor %}</select></div>
-        <div class="mb-3"><label for="algorithm" class="form-label">Encryption algorithm</label><select id="algorithm" name="algorithm" class="form-select" required><option value="AES-GCM">AES-256-GCM · Authenticated</option><option value="DES-CBC">DES-CBC · Legacy demonstration</option><option value="RC4">RC4 · Legacy demonstration</option><option value="ALL">All three algorithms · 3 copies</option></select><div class="form-text text-muted">AES-GCM is recommended for this educational app. DES and RC4 are obsolete and are included for coursework comparison.</div></div>
-        <div class="mb-4"><label for="password" class="form-label">File encryption password</label><input id="password" type="password" name="password" class="form-control" placeholder="At least 8 characters" required minlength="8" autocomplete="new-password"><div class="form-text text-muted">Keep this password safe; you will need it to retrieve the file.</div></div>
-        <button type="submit" class="btn btn-primary-hv w-100"><i class="bi bi-shield-lock me-2"></i>Encrypt &amp; save file</button>
+      <div class="card-header-clean">
+        <div class="section-icon">
+          <i class="bi bi-cloud-arrow-up"></i>
+        </div>
+        <div>
+          <h2 class="h5 fw-bold mb-1">Add a file</h2>
+          <p class="small text-muted mb-0">
+            Encrypt it before saving to your vault.
+          </p>
+        </div>
+      </div>
+
+      <form method="POST"
+            enctype="multipart/form-data"
+            class="needs-validation">
+
+        <input type="hidden"
+               name="csrf_token"
+               value="{{ csrf_token() }}">
+
+        <div class="mb-3">
+          <label for="file" class="form-label">Choose a file</label>
+
+          <input id="file"
+                 type="file"
+                 name="file"
+                 class="form-control"
+                 accept=".png,.jpg,.jpeg"
+                 required>
+
+          <div id="file-help" class="form-text text-muted">
+            Choose an identity or insurance image (PNG or JPEG).
+          </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="file_type" class="form-label">Vault category</label>
+
+            <select id="file_type"
+                    name="file_type"
+                    class="form-select"
+                    required
+>
+                {% for key, label in CATEGORIES.items() %}
+                    <option value="{{ key }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="algorithm" class="form-label">
+            Encryption algorithm
+          </label>
+
+          <select id="algorithm"
+                  name="algorithm"
+                  class="form-select"
+                  required>
+            <option value="AES-GCM">
+              AES-256-GCM · Authenticated
+            </option>
+            <option value="DES-CBC">
+              DES-CBC · Legacy demonstration
+            </option>
+            <option value="RC4">
+              RC4 · Legacy demonstration
+            </option>
+            <option value="ALL">
+              All three algorithms · 3 copies
+            </option>
+          </select>
+
+          <div class="form-text text-muted">
+            AES-GCM is recommended for this educational app.
+            DES and RC4 are obsolete and are included for coursework
+            comparison.
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label for="password" class="form-label">
+            File encryption password
+          </label>
+
+          <input id="password"
+                 type="password"
+                 name="password"
+                 class="form-control"
+                 placeholder="At least 8 characters"
+                 required
+                 minlength="8"
+                 autocomplete="new-password">
+
+          <div class="form-text text-muted">
+            Keep this password safe; you will need it to retrieve the file.
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary-hv w-100">
+          <i class="bi bi-shield-lock me-2"></i>
+          Encrypt &amp; save file
+        </button>
       </form>
     </section>
   </div>
+
   <div class="col-xl-7">
     <section class="card p-4 p-lg-4 h-100">
-      <div class="card-header-clean"><div class="section-icon"><i class="bi bi-folder2-open"></i></div><div><h2 class="h5 fw-bold mb-1">My Health Files</h2><p class="small text-muted mb-0">Only your own stored files are shown here.</p></div></div>
+      <div class="card-header-clean">
+        <div class="section-icon">
+          <i class="bi bi-folder2-open"></i>
+        </div>
+        <div>
+          <h2 class="h5 fw-bold mb-1">My Health Files</h2>
+          <p class="small text-muted mb-0">
+            Only your own stored files are shown here.
+          </p>
+        </div>
+      </div>
+
       <div class="table-responsive">
         <table class="table align-middle">
-          <thead><tr><th>File</th><th>Category &amp; date</th><th>Algorithm</th><th>Size</th><th class="text-end">Actions</th></tr></thead>
-          <tbody>
-          {% for f in files %}
+          <thead>
             <tr>
-              <td><div class="file-name" title="{{ f.original_filename }}">{{ f.original_filename }}</div><div class="small text-muted">Encrypted at rest</div></td>
-              <td><span class="small fw-semibold">{{ CATEGORIES.get(f.category, f.category) }}</span><div class="small text-muted mt-1">{{ f.uploaded_at }}</div></td>
-              <td><span class="algorithm-badge">{{ f.algorithm }}</span></td>
-              <td><span class="small">{{ f.plaintext_size }} B</span><div class="small text-muted">{{ f.ciphertext_size }} B encrypted</div></td>
-              <td class="text-end" style="min-width:155px">
-                <form action="/decrypt/{{ f.id }}" method="POST" class="d-flex gap-1 justify-content-end mb-2"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="password" name="password" placeholder="File password" aria-label="Password to download {{ f.original_filename }}" class="form-control form-control-sm" style="min-width:95px;max-width:130px" required><button type="submit" class="btn btn-sm btn-outline-hv" title="Decrypt and download" aria-label="Decrypt and download {{ f.original_filename }}"><i class="bi bi-download"></i></button></form>
-                <form action="/files/{{ f.id }}/delete" method="POST" class="text-end" onsubmit="return confirm('Delete this file from your vault? This cannot be undone.')"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit" class="btn btn-sm btn-outline-danger" aria-label="Delete {{ f.original_filename }}"><i class="bi bi-trash3 me-1"></i>Delete</button></form>
-              </td>
+              <th>File</th>
+              <th>Category &amp; date</th>
+              <th>Algorithm</th>
+              <th>Size</th>
+              <th class="text-end">Actions</th>
             </tr>
-          {% else %}
-            <tr><td colspan="5"><div class="empty-state"><span class="empty-icon"><i class="bi bi-folder-plus"></i></span><h3 class="h6 fw-bold">Your vault is ready</h3><p class="small mb-0">Files you securely store will appear here.</p></div></td></tr>
-          {% endfor %}
+          </thead>
+
+          <tbody>
+            {% for f in files %}
+              <tr>
+                <td>
+                  <div class="file-name"
+                       title="{{ f.original_filename }}">
+                    {{ f.original_filename }}
+                  </div>
+                  <div class="small text-muted">Encrypted at rest</div>
+                </td>
+
+                <td>
+                  <span class="small fw-semibold">
+                    {{ CATEGORIES.get(f.category, f.category) }}
+                  </span>
+                  <div class="small text-muted mt-1">
+                    {{ f.uploaded_at }}
+                  </div>
+                </td>
+
+                <td>
+                  <span class="algorithm-badge">{{ f.algorithm }}</span>
+                </td>
+
+                <td>
+                  <span class="small">{{ f.plaintext_size }} B</span>
+                  <div class="small text-muted">
+                    {{ f.ciphertext_size }} B encrypted
+                  </div>
+                </td>
+
+                <td class="text-end" style="min-width:155px">
+                  <form action="/decrypt/{{ f.id }}"
+                        method="POST"
+                        class="d-flex gap-1 justify-content-end mb-2">
+
+                    <input type="hidden"
+                           name="csrf_token"
+                           value="{{ csrf_token() }}">
+
+                    <input type="password"
+                           name="password"
+                           placeholder="File password"
+                           aria-label="Password to download {{ f.original_filename }}"
+                           class="form-control form-control-sm"
+                           style="min-width:95px;max-width:130px"
+                           required>
+
+                    <button type="submit"
+                            class="btn btn-sm btn-outline-hv"
+                            title="Decrypt and download"
+                            aria-label="Decrypt and download {{ f.original_filename }}">
+                      <i class="bi bi-download"></i>
+                    </button>
+                  </form>
+
+                  <form action="/files/{{ f.id }}/delete"
+                        method="POST"
+                        class="text-end"
+                        onsubmit="return confirm('Delete this file from your vault? This cannot be undone.')">
+
+                    <input type="hidden"
+                           name="csrf_token"
+                           value="{{ csrf_token() }}">
+
+                    <button type="submit"
+                            class="btn btn-sm btn-outline-danger"
+                            aria-label="Delete {{ f.original_filename }}">
+                      <i class="bi bi-trash3 me-1"></i>
+                      Delete
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="5">
+                  <div class="empty-state">
+                    <span class="empty-icon">
+                      <i class="bi bi-folder-plus"></i>
+                    </span>
+                    <h3 class="h6 fw-bold">Your vault is ready</h3>
+                    <p class="small mb-0">
+                      Files you securely store will appear here.
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>
     </section>
   </div>
 </div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}" defer></script>
+
 {% endblock %}

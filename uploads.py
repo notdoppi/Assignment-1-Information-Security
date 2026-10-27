@@ -18,16 +18,11 @@ ALLOWED = {
         ".xls": "application/vnd.ms-excel",
         ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     },
-    "video": {".mp4": "video/mp4", ".mov": "video/quicktime", ".avi": "video/x-msvideo",
-              ".webm": "video/webm", ".mkv": "video/x-matroska"},
+    "video": {".mp4": "video/mp4"},
 }
 OLE = b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1"
-
-
 class UploadError(ValueError):
     """Message is safe to show to the user."""
-
-
 def sanitize_filename(name: str) -> str:
     """Drop any directory part, control characters and odd symbols; cap length."""
     name = (name or "").replace("\\", "/").split("/")[-1]
@@ -38,7 +33,6 @@ def sanitize_filename(name: str) -> str:
         stem, ext = os.path.splitext(name)
         name = stem[: 120 - len(ext)] + ext
     return name
-
 
 def _magic_ok(ext: str, head: bytes) -> bool:
     if ext == ".png":
@@ -59,31 +53,36 @@ def _magic_ok(ext: str, head: bytes) -> bool:
         return head.startswith(b"\x1aE\xdf\xa3")
     return False
 
-
 def validate_upload(filename: str, declared_mime: str | None, data: bytes,
                     category: str, max_bytes: int) -> tuple[str, str]:
     """Return (safe_filename, canonical_mime) or raise UploadError."""
     if category not in CATEGORIES:
-        raise UploadError("Kategori tidak valid.")
+        raise UploadError("Invalid category.")
     safe = sanitize_filename(filename)
     if not safe:
-        raise UploadError("Nama berkas tidak valid.")
+        raise UploadError("Invalid filename.")
     ext = os.path.splitext(safe)[1].lower()
     allowed = ALLOWED[category]
     if ext not in allowed:
-        raise UploadError("Tipe berkas tidak didukung untuk kategori ini (" +
-                          ", ".join(sorted(allowed)) + ").")
+        raise UploadError(
+            "File type not supported for this category (" + ", ".join(sorted(allowed)) + ")."
+        )
     canonical = allowed[ext]
-    if declared_mime and declared_mime not in (canonical, "application/octet-stream",
-                                               "application/x-zip-compressed"):
+    if declared_mime and declared_mime not in (canonical, "application/octet-stream", "application/x-zip-compressed"):
         # Browsers sometimes send odd types for Office files, so only reject
         # declared types that clearly belong to something else.
-        if not (ext in (".docx", ".xlsx", ".doc", ".xls") and declared_mime.startswith("application/")):
-            raise UploadError("Tipe MIME berkas tidak sesuai dengan ekstensinya.")
+        if not (
+            ext in (".docx", ".xlsx", ".doc", ".xls")
+            and declared_mime.startswith("application/")
+        ):
+            raise UploadError(
+                "The file MIME type does not match its extension."
+            )
     if len(data) == 0:
-        raise UploadError("Berkas kosong tidak dapat diunggah.")
+        raise UploadError("Empty files cannot be uploaded.")
     if len(data) > max_bytes:
-        raise UploadError("Ukuran berkas melebihi batas yang diizinkan.")
+        raise UploadError("File size exceeds the allowed limit.")
     if not _magic_ok(ext, data[:1100]):
-        raise UploadError("Isi berkas tidak sesuai dengan ekstensinya.")
+        raise UploadError("File content does not match its extension.")
+
     return safe, canonical
