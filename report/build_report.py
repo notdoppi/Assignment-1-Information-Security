@@ -1,4 +1,4 @@
-"""Build report/report.md and report/report.pdf from current benchmark results.
+"""Build report/report.md from current benchmark results.
 
 Expected run from any directory:
     python report/build_report.py
@@ -10,7 +10,6 @@ import csv
 import json
 import statistics as stats
 from pathlib import Path
-from xml.sax.saxutils import escape
 
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "benchmark" / "results"
@@ -211,86 +210,12 @@ def build_markdown() -> str:
     return "\n".join(lines)
 
 
-def write_pdf(markdown: str) -> None:
-    """Create a readable PDF with ReportLab if it is installed."""
-    try:
-        from reportlab.lib import colors
-        from reportlab.lib.pagesizes import A4
-        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-        from reportlab.lib.enums import TA_CENTER
-        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
-    except ImportError:
-        print("ReportLab is not installed; Markdown report was written, PDF was skipped.")
-        return
-
-    styles = getSampleStyleSheet()
-    styles.add(ParagraphStyle(name="ReportTitle", parent=styles["Title"], alignment=TA_CENTER, spaceAfter=12))
-    doc = SimpleDocTemplate(str(REPORT_DIR / "report.pdf"), pagesize=A4, rightMargin=40, leftMargin=40, topMargin=42, bottomMargin=42)
-    story = []
-    lines = markdown.splitlines()
-    i = 0
-    while i < len(lines):
-        line = lines[i]
-        if not line.strip() or line == "---":
-            story.append(Spacer(1, 6)); i += 1; continue
-        if line.startswith("!["):
-            # Keep image embedding optional; resolve known graph paths only.
-            try:
-                start = line.find("](") + 2
-                rel = line[start:line.rfind(")")]
-                image_path = (REPORT_DIR / rel).resolve()
-                if image_path.exists() and image_path.is_file():
-                    story.append(Image(str(image_path), width=460, height=230, kind="proportional"))
-                    story.append(Spacer(1, 8))
-            except Exception:
-                pass
-            i += 1; continue
-        if line.startswith("|"):
-            table_lines = []
-            while i < len(lines) and lines[i].startswith("|"):
-                table_lines.append(lines[i]); i += 1
-            parsed = []
-            for item in table_lines:
-                cells = [c.strip() for c in item.strip().strip("|").split("|")]
-                if cells and all(set(c) <= set("-: ") for c in cells):
-                    continue
-                parsed.append([Paragraph(escape(c), styles["BodyText"]) for c in cells])
-            if parsed:
-                width = 515
-                ncols = max(len(row) for row in parsed)
-                col_widths = [width / ncols] * ncols
-                story.append(Table(parsed, colWidths=col_widths, repeatRows=1, hAlign="LEFT", style=TableStyle([
-                    ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#e8edf3")),
-                    ("GRID", (0, 0), (-1, -1), 0.35, colors.grey),
-                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                    ("LEFTPADDING", (0, 0), (-1, -1), 4), ("RIGHTPADDING", (0, 0), (-1, -1), 4),
-                    ("TOPPADDING", (0, 0), (-1, -1), 4), ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
-                ])))
-                story.append(Spacer(1, 8))
-            continue
-        if line.startswith("# "):
-            story.append(Paragraph(escape(line[2:]), styles["ReportTitle"]))
-        elif line.startswith("## "):
-            story.append(Paragraph(escape(line[3:]), styles["Heading1"]))
-        elif line.startswith("### "):
-            story.append(Paragraph(escape(line[4:]), styles["Heading2"]))
-        elif line.startswith("- "):
-            story.append(Paragraph("• " + escape(line[2:]), styles["BodyText"]))
-        else:
-            story.append(Paragraph(escape(line), styles["BodyText"]))
-        story.append(Spacer(1, 4))
-        i += 1
-    doc.build(story)
-    print(f"Wrote {REPORT_DIR / 'report.pdf'}")
-
-
 def main() -> None:
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
     markdown = build_markdown()
     output = REPORT_DIR / "report.md"
     output.write_text(markdown, encoding="utf-8")
     print(f"Wrote {output}")
-    write_pdf(markdown)
 
 
 if __name__ == "__main__":
