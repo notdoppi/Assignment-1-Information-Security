@@ -1,4 +1,4 @@
-# Secure Private Data Vault (Information Security – Assignment 1)
+# Assignment-1-Information-Security# Secure Private Data Vault (Information Security – Assignment 1)
 
 A Flask web application where users register, log in, and store **ID-card images, PDF/DOC/XLS documents and videos**
 encrypted with **AES, DES and RC4**, plus a reproducible **AES-mode benchmark** (CBC, CFB, OFB, CTR, + GCM) and a technical report.
