@@ -1,102 +1,196 @@
-# Secure Private Data Vault (Information Security – Assignment 1)
+# Secure Private Data Vault
+**Information Security — Assignment 1**
 
-A Flask web application where users register, log in, and store **ID-card images, PDF/DOC/XLS documents and videos**
-encrypted with **AES, DES and RC4**, plus a reproducible **AES-mode benchmark** (CBC, CFB, OFB, CTR, + GCM) and a technical report.
+A Flask web application for registering, logging in, and storing files encrypted with **AES-GCM, DES-CBC, or RC4**. The project also includes a reproducible benchmark comparing these three algorithms and a technical report.
 
-> **Educational project.** DES and RC4 are obsolete/insecure and are present only because the assignment requires them.
-> Nothing here is certified as GDPR / UU PDP compliant, and it is not claimed to be production-secure (see *Known limitations*).
+> **Educational project.** DES and RC4 are obsolete and cryptographically insecure; they are included only for academic comparison. Use AES-GCM for real data. This project has not been security-audited and does not claim compliance with GDPR or Indonesia's UU PDP.
+
+## Features
+
+- User registration and login.
+- Encrypted storage for supported uploads, including images and common document formats.
+- Per-file encryption passwords; passwords are not stored, so forgotten passwords cannot be recovered.
+- Algorithm selection for each file, with an `ALL` option that stores three independent encrypted copies using AES-GCM, DES-CBC, and RC4.
+- SQLite database storage for encrypted file contents.
+- Input validation for filenames, extensions, MIME types, magic bytes, and file size.
+- Benchmark scripts, plots, test suite, and a generated Markdown/PDF report.
 
 ## Project layout
+
+```text
+app.py                  Flask app factory (routes, authentication, CSRF, security headers)
+uploads.py              Filename, extension, MIME, magic-byte, and size validation
+vault_crypto/           AES-GCM, DES-CBC, RC4, and password-envelope implementation
+database/               SQLite schema and database access
+templates/ static/      Web interface
+benchmark/              Synthetic fixtures, benchmark runner, experiments, plots, and results
+tests/                  Unit tests for cryptography, web app, and benchmark
+report/                 Report source and generated Markdown/PDF report
+original_submission/     Copy of the original submission, if included
 ```
-app.py                 Flask app factory (routes, auth, CSRF, security headers)
-uploads.py             filename / extension / MIME / magic-byte / size validation
-vault_crypto/          AES-CBC/CFB/OFB/CTR/GCM, DES-CBC, RC4 + password envelope (PBKDF2, HKDF, HMAC)
-database/              schema.sql + db.py (sqlite3; ciphertext stored as BLOB)
-templates/ static/     UI (original look preserved)
-benchmark/             fixtures generator, runner, ciphertext experiments, plots, results/, graphs/
-tests/                 unittest suite (pytest-compatible): crypto, web app, benchmark
-report/                report.md, report.pdf, build_report.py
-original_submission/   untouched copy of the original my_web_crypto.zip
-```
+
+## Requirements
+
+- Python 3.10 or newer (developed and tested with Python 3.12).
+- Install the main dependencies and the benchmark/test dependencies.
 
 ## Setup
-Python 3.10+ is required (developed and tested with 3.12).
-```bash
-python -m venv .venv && source .venv/bin/activate        # Windows: .venv\Scripts\activate
-pip install -r requirements.txt                          # Flask, cryptography
-pip install -r requirements-benchmark.txt                # needed for the benchmark graphs AND to run the full test suite
-cp .env.example .env                                     # then edit .env
-python -c "import secrets; print(secrets.token_hex(32))" # paste the output as SECRET_KEY in .env
-```
-`.env` variables: `SECRET_KEY` (**required**, the app refuses to start without it), `DATABASE_PATH`, `MAX_UPLOAD_MB`,
-`KDF_ITERATIONS` (default 600000), `SESSION_COOKIE_SECURE` (`1` behind HTTPS; `.env.example` sets `0` for plain-http localhost),
-`HOST`, `PORT`.
 
-## Database initialisation
-The schema (`database/schema.sql`) is created automatically on start. To create it explicitly:
+### Windows (PowerShell)
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python -m pip install -r requirements-benchmark.txt
+Copy-Item .env.example .env
+```
+
+Open `.env` and set `SECRET_KEY` to a newly generated random value. Generate one with:
+
+```powershell
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+### macOS / Linux
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m pip install -r requirements-benchmark.txt
+cp .env.example .env
+```
+
+Generate a secret key with:
+
+```bash
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+Paste the generated value into `.env` as `SECRET_KEY`.
+
+### Environment variables
+
+| Variable | Purpose |
+|---|---|
+| `SECRET_KEY` | Required Flask secret key. The application should refuse to start without it. |
+| `DATABASE_PATH` | Optional database path. |
+| `MAX_UPLOAD_MB` | Maximum upload size, subject to the configured application limit. |
+| `KDF_ITERATIONS` | Password-based key derivation iterations; default is 600,000 if unchanged in configuration. |
+| `SESSION_COOKIE_SECURE` | Set to `1` when serving over HTTPS; local HTTP development typically uses `0`. |
+| `HOST` / `PORT` | Optional host and port configuration. |
+
+Do not commit `.env`, passwords, or other secrets to Git.
+
+## Database
+
+The SQLite schema is initialized automatically when the application starts. To initialize a database explicitly, if supported by the current checkout:
+
 ```bash
 python -m database.db instance/vault.db
 ```
-There are no migrations: to reset, stop the app and delete `instance/vault.db`.
+
+There are no database migrations. To reset a local database, stop the application and remove the configured database file. **This permanently deletes the data in that database**, so back it up first if needed.
 
 ## Run the application
+
 ```bash
-python app.py                 # http://127.0.0.1:5000  (debug mode is OFF)
-# or:  flask --app "app:create_app" run
+python app.py
 ```
-For anything beyond local testing run behind a real WSGI server (e.g. `gunicorn "app:create_app()"`) and HTTPS, with `SESSION_COOKIE_SECURE=1`.
 
-Usage: register → log in → choose a file, its category, an algorithm and a **per-file encryption password** → *Proses Enkripsi & Simpan*.
-To get the file back, type the same password next to the file and press the unlock button. The password is never stored; a lost password means the data is unrecoverable.
-The algorithm `ALL` stores three independent encrypted copies (AES-CBC, DES-CBC, RC4) of the same upload.
+The local development server is typically available at `http://127.0.0.1:5000`. Alternatively, if supported by the current Flask setup:
 
-## Run the tests
-The tests need **both** requirement files (`tests/test_benchmark.py` imports `matplotlib`; the fixture generator needs `pillow`):
 ```bash
-pip install -r requirements.txt -r requirements-benchmark.txt
-python -m unittest discover -s tests -t . -v      # stdlib runner; no pytest needed
-# optional: pip install pytest && pytest -q
+flask --app "app:create_app" run
 ```
-If you see `ModuleNotFoundError: No module named 'matplotlib'`, the benchmark requirements are not installed in the active virtual environment.
-`test_crypto` and `test_webapp` alone need only `requirements.txt`: `python -m unittest tests.test_crypto tests.test_webapp`.
-The tests do not depend on your local `.env` (the secure-cookie default test stubs `.env` loading and restores `os.environ`).
-The suite includes a short benchmark run (small configuration) and takes roughly 30–60 s.
 
-## Run the benchmark and regenerate every artefact
-```bash
-python -m benchmark.generate_fixtures                  # deterministic synthetic inputs -> benchmark/fixtures/ (+MANIFEST.json)
-python -m benchmark.run_benchmark --trials 30 --warmup 3 --app-trials 10
-python -m benchmark.make_plots                         # benchmark/graphs/*.png
-python report/build_report.py                          # report/report.md (tables from the CSVs) and report/report.pdf (PDF needs pandoc + LibreOffice)
-```
-Results land in `benchmark/results/`: `raw_results.csv` (every trial), `summary.csv` (mean/median/stdev/min/max/CI/throughput),
-`io_results.csv` (file read/write, measured separately), `app_download_results.csv` (end-to-end Flask download),
-`ciphertext_comparison.json`, `environment.json`. Run the benchmark on an otherwise idle machine; timings differ per machine.
-Options: `--trials`, `--warmup`, `--seed`, `--app-trials`, `--skip-app`.
+For deployment beyond local testing, use a production WSGI server and HTTPS, and configure `SESSION_COOKIE_SECURE=1` when HTTPS is enabled. The built-in development server is not intended for production.
 
-## Algorithms and modes
-| Name | Role | Notes |
+### Basic usage
+
+1. Register an account and log in.
+2. Choose a supported file and category.
+3. Select an algorithm and enter a per-file encryption password.
+4. Encrypt and save the file.
+5. To retrieve it, enter the same password and unlock/download the file.
+
+The application does not store the per-file password. If it is lost, the encrypted file cannot be recovered through the application.
+
+The `ALL` option stores three independent encrypted copies—one each using AES-GCM, DES-CBC, and RC4. It does not mean that the same file is encrypted in layers.
+
+## Algorithms
+
+| Algorithm | Role | Security notes |
 |---|---|---|
-| AES-256-CBC | required mode, app default | PKCS#7 padding; error in one ciphertext block garbles that block and flips bits in the next |
-| AES-256-CFB (128-bit) | required mode | stream-like, no padding; error garbles the next block |
-| AES-256-OFB | required mode | no padding; bit errors do not propagate |
-| AES-256-CTR | required mode | no padding; parallelisable; bit errors do not propagate; never reuse a nonce |
-| AES-256-GCM | extra | authenticated encryption (AEAD) |
-| DES-CBC | required by assignment | 56-bit key: **broken**; implemented as 3DES with K1=K2=K3 (identical to DES) |
-| RC4 | required by assignment | stream cipher (**not** a block-cipher mode): biased, **broken** |
+| **AES-GCM** | Recommended algorithm | Authenticated encryption (AEAD); detects ciphertext tampering when verification is correctly performed. |
+| **DES-CBC** | Legacy academic comparison | DES has an effective 56-bit key and is broken. The implementation may use a TripleDES primitive with all three keys identical to reproduce DES behavior. |
+| **RC4** | Legacy academic comparison | A stream cipher, not a block-cipher mode. Its keystream biases make it insecure. |
 
-Envelope (every stored file): `PBKDF2-HMAC-SHA256 (random 16-byte salt, 600k iterations) → HKDF-Expand → separate encryption key and MAC key`;
-random IV/nonce per file; **HMAC-SHA256 over (header ‖ ciphertext)** is verified *before* decrypting (AES-GCM uses its own tag).
-Wrong passwords and tampered data are indistinguishable by design and never yield output.
+AES-GCM, DES-CBC, and RC4 are not equally secure. **Use AES-GCM for real data; do not use DES-CBC or RC4 to protect sensitive information.**
+
+### Password envelope and integrity
+
+The project uses a password-based key derivation and key-separation design. In the current implementation, check the source code and generated report for the exact parameters and envelope format. For non-AEAD legacy algorithms, integrity protection should be verified before decryption; AES-GCM provides its own authentication tag.
+
+## Tests
+
+Install both dependency sets before running the full suite. The benchmark requirements may include packages such as `matplotlib` and `Pillow` used by benchmark tests and fixture generation.
+
+```bash
+python -m pip install -r requirements.txt
+python -m pip install -r requirements-benchmark.txt
+python -m unittest discover -s tests -t . -v
+```
+
+If `pytest` is installed, you may also run:
+
+```bash
+pytest -q
+```
+
+If you encounter `ModuleNotFoundError` for `matplotlib` or `PIL`, install the benchmark requirements in the **same Python environment** selected in VS Code.
+
+## Run the benchmark and regenerate the report
+
+Run these commands from the project root:
+
+```bash
+python -m benchmark.generate_fixtures
+python -m benchmark.run_benchmark --trials 30 --warmup 3 --app-trials 10
+python -m benchmark.make_plots
+python report/build_report.py
+```
+
+The benchmark runner may support additional options such as `--trials`, `--warmup`, `--seed`, `--app-trials`, and `--skip-app`; run it with `--help` to confirm the options in your checkout.
+
+Benchmark outputs are written under `benchmark/results/`, and graphs under `benchmark/graphs/`. Typical result files include:
+
+- `raw_results.csv` — individual timing measurements.
+- `summary.csv` — aggregate timing and throughput statistics.
+- `io_results.csv` — separate file read/write timings.
+- `app_download_results.csv` — end-to-end application download timings, when app trials are enabled.
+- `environment.json` — environment and benchmark configuration metadata.
+- Additional JSON files for ciphertext and cryptographic experiments, depending on the current implementation.
+
+The report generator creates `report/report.md` and may create `report/report.pdf` when its PDF dependency is installed. Check the current `build_report.py` implementation for its exact PDF-generation requirements.
+
+Run benchmarks on an otherwise idle machine. Results depend on the CPU, operating system, Python version, cryptographic library, and workload; do not treat them as universal performance rankings.
 
 ## Known limitations
-* Educational project; not audited; no claim of legal compliance with GDPR or UU PDP.
-* DES and RC4 are cryptographically broken; use AES-GCM for anything real.
-* The slide says data must be encrypted "with all of these algorithms". Implemented as: the user may pick one algorithm per file, or `ALL` for three independent copies. **Confirm the intended interpretation with the lecturer** (e.g. layered encryption).
-* Encrypted bytes live in SQLite BLOBs, simple and satisfying "in a database", but files are held in memory (default limit 100 MB) – not suited to multi-gigabyte video.
-* Filenames, category, sizes and timestamps are stored as plaintext metadata.
-* Per-file passwords are chosen by the user; there is no recovery, no key escrow, no 2FA, no password reset, no account deletion.
-* The login throttle is in-process memory (reset on restart, per worker).
-* Bootstrap/Google Fonts are loaded from CDNs by the templates (needs internet in the browser).
-* Magic-byte checks reduce, but do not eliminate, malicious uploads; no antivirus scanning. Files are never executed or served inline.
-* Benchmark numbers are specific to the machine they were produced on.
+
+- This is an educational project and has not undergone a professional security audit.
+- DES and RC4 are obsolete and insecure; they are included for academic comparison only.
+- The interpretation of “encrypt with all algorithms” depends on the assignment. This implementation's `ALL` option creates independent copies rather than layered encryption; confirm the intended interpretation with the lecturer.
+- Uploaded files may be held in memory and may have a configured size limit; this approach is not designed for multi-gigabyte videos.
+- Filenames, categories, sizes, timestamps, or other metadata may be stored without encryption.
+- There is no recovery mechanism for forgotten per-file passwords unless one is explicitly implemented.
+- Login throttling, if implemented in process memory, may reset on restart and may not be shared across multiple workers.
+- External assets loaded from CDNs require a network connection in the browser.
+- File validation reduces risk but does not replace antivirus scanning or a comprehensive upload-security review.
+- Benchmark measurements are specific to the machine and configuration used to generate them.
+- This project makes no claim of GDPR or UU PDP compliance.
+
+## Academic use and responsible handling
+
+Use synthetic or non-sensitive files for testing. Do not upload real identity-card images or confidential documents to an unreviewed deployment. Keep secrets and local data out of version control, and document any changes to the cryptographic implementation before submitting the project.
