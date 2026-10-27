@@ -6,9 +6,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-ORDER = ["AES-CBC", "AES-CFB", "AES-OFB", "AES-CTR", "AES-GCM", "DES-CBC", "RC4"]
-COLORS = {"AES-CBC": "#1f77b4", "AES-CFB": "#ff7f0e", "AES-OFB": "#2ca02c", "AES-CTR": "#d62728",
-          "AES-GCM": "#9467bd", "DES-CBC": "#8c564b", "RC4": "#7f7f7f"}
+ORDER = ["AES-GCM", "DES-CBC", "RC4"]
+COLORS = {"AES-GCM": "#9467bd", "DES-CBC": "#8c564b", "RC4": "#7f7f7f"}
 
 
 def read(p): return list(csv.DictReader(open(p)))
@@ -46,10 +45,10 @@ def make(results: Path, outdir: Path) -> list[Path]:
         ax.set_yscale("log"); ax.set_title("Mean processing time for a 10 MiB input"); ax.legend(); ax.grid(True, axis="y", alpha=.3)
         fig.tight_layout(); p = outdir / "fig2_time_10MiB.png"; fig.savefig(p, dpi=150); plt.close(fig); made.append(p)
 
-        # 3. Box plot of individual trials (AES modes + GCM), 10 MiB
+        # 3. Box plot of individual trials for the AES-GCM configuration, 10 MiB
         fig, axes = plt.subplots(1, 2, figsize=(11, 4))
         for ax, op in zip(axes, ("encrypt", "decrypt")):
-            ms = [a for a in ORDER if a.startswith("AES")]
+            ms = ["AES-GCM"]
             data = [[int(r["time_ns"]) / 1e6 for r in raw if r["file"] == fn and r["algorithm"] == a and r["op"] == op] for a in ms]
             ax.boxplot(data, tick_labels=ms, showfliers=True); ax.set_ylabel("Trial time (ms)"); ax.set_title(f"{op} - 10 MiB, individual trials"); ax.grid(True, axis="y", alpha=.3)
         fig.tight_layout(); p = outdir / "fig3_trial_distribution_10MiB.png"; fig.savefig(p, dpi=150); plt.close(fig); made.append(p)

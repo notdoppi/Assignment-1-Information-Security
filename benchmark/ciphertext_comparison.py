@@ -1,26 +1,25 @@
 """Controlled ciphertext experiments (fixed key/IV => reproducible lab output).
 
 The fixed key and IV below exist ONLY so that two runs of this script give the
-same numbers. They must never be reused for real data: reusing a (key, IV/nonce)
-pair breaks CTR/OFB/GCM completely and leaks information in CBC/CFB.
+same numbers. They must never be reused for real data: reusing an AES-GCM nonce breaks its security guarantees.
 """
 from __future__ import annotations
 import hashlib, json, os
 from pathlib import Path
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from vault_crypto import REQUIRED_AES_MODES, DecryptionError, raw_decrypt, raw_encrypt
+from vault_crypto import ALGORITHMS, REQUIRED_ALGORITHMS, DecryptionError, raw_decrypt, raw_encrypt
 
 LAB_KEY = hashlib.sha256(b"LAB-ONLY-KEY: never use for real data").digest()          # 32 bytes
 LAB_IV = hashlib.sha256(b"LAB-ONLY-IV: never use for real data").digest()[:16]       # 16 bytes
-MODES = list(REQUIRED_AES_MODES) + ["AES-GCM"]
+MODES = list(REQUIRED_ALGORITHMS)
 
 
 def _iv(algo):  # GCM uses a 96-bit nonce
-    return LAB_IV[:12] if algo == "AES-GCM" else LAB_IV
+    return LAB_IV[:12] if algo == "AES-GCM" else LAB_IV[:ALGORITHMS[algo]["iv_len"]]
 
 
 def _enc(algo, data, key=LAB_KEY, iv=None):
-    return raw_encrypt(algo, key, iv if iv is not None else _iv(algo), data)
+    return raw_encrypt(algo, key[:ALGORITHMS[algo]["key_len"]], iv if iv is not None else _iv(algo), data)
 
 
 def hamming_fraction(a: bytes, b: bytes) -> float:
@@ -36,7 +35,7 @@ def run(plaintext: bytes) -> dict:
     res["same_key_iv_plaintext"] = {m: dict(ciphertext_bytes=len(c), overhead_bytes=len(c) - len(plaintext),
                                             first_16_bytes_hex=c[:16].hex(), sha256=hashlib.sha256(c).hexdigest())
                                     for m, c in cts.items()}
-    # CFB-128 / OFB share the same first block only if IV is equal (both XOR E_K(IV) into plaintext block 1).
+    # Pairwise differences are descriptive only; these algorithms have different formats and security properties.
     res["pairwise_bit_difference_fraction"] = {
         f"{a} vs {b}": round(hamming_fraction(cts[a], cts[b]), 4) for i, a in enumerate(MODES) for b in MODES[i + 1:]}
     res["pairwise_first_block_identical"] = {
@@ -54,7 +53,7 @@ def run(plaintext: bytes) -> dict:
     # Padding / size behaviour
     lens = [0, 1, 15, 16, 17, 31, 32, 1000]
     res["ciphertext_size_by_plaintext_length"] = {m: {str(n): len(_enc(m, bytes(n))) for n in lens} for m in MODES}
-    # Repeated-block plaintext: why ECB is excluded
+    # Repeated-block plaintext: ECB is shown only as a demonstration of why it is excluded.
     blk = bytes.fromhex("00112233445566778899aabbccddeeff"); rep = blk * 8
     def dup(c): 
         bl = [c[i:i + 16] for i in range(0, len(rep), 16)]
@@ -65,9 +64,9 @@ def run(plaintext: bytes) -> dict:
     # Single-bit error propagation: flip bit 0 of ciphertext byte 3 in block 2 (10 plaintext blocks)
     n_blocks = 10; pt = bytes((i * 7 + 3) % 256 for i in range(16 * n_blocks)); prop = {}
     for m in MODES:
-        ct = bytearray(_enc(m, pt)); ct[16 * 2 + 3] ^= 0x01
+        ct = bytearray(_enc(m, pt)); ct[min(16 * 2 + 3, len(ct)-1)] ^= 0x01
         try:
-            out = raw_decrypt(m, LAB_KEY, _iv(m), bytes(ct))
+            out = raw_decrypt(m, LAB_KEY[:ALGORITHMS[m]["key_len"]], _iv(m), bytes(ct))
         except DecryptionError:
             prop[m] = dict(result="decryption rejected (authentication/padding failure)", plaintext_returned=False); continue
         per_block = [sum(bin(a ^ b).count("1") for a, b in zip(out[i*16:(i+1)*16], pt[i*16:(i+1)*16])) for i in range(n_blocks)]

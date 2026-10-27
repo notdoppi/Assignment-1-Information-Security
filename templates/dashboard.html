@@ -29,14 +29,10 @@
                 <div class="mb-3">
                     <label class="form-label small fw-semibold text-secondary">Algoritma Kriptografi</label>
                     <select name="algorithm" class="form-select">
-                        <option value="AES-CBC">AES-256-CBC (+HMAC)</option>
-                        <option value="AES-CFB">AES-256-CFB (+HMAC)</option>
-                        <option value="AES-OFB">AES-256-OFB (+HMAC)</option>
-                        <option value="AES-CTR">AES-256-CTR (+HMAC)</option>
                         <option value="AES-GCM">AES-256-GCM (authenticated)</option>
                         <option value="DES-CBC">DES-CBC (obsolete, demo only)</option>
                         <option value="RC4">RC4 (obsolete, demo only)</option>
-                        <option value="ALL">ALL: AES-CBC + DES + RC4 (3 copies)</option>
+                        <option value="ALL">ALL: AES-GCM + DES + RC4 (3 copies)</option>
                     </select>
                 </div>
                 <div class="mb-4">

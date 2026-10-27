@@ -22,7 +22,7 @@ from vault_crypto import ALGORITHMS, DecryptionError, Envelope, decrypt_bytes, e
 USERNAME_RE = re.compile(r"^[A-Za-z0-9_.-]{3,32}$")
 MIN_PASSWORD = 8
 # What the user may pick in the form. "ALL" stores three independent copies.
-REQUIRED_TRIO = ("AES-CBC", "DES-CBC", "RC4")
+REQUIRED_TRIO = ("AES-GCM", "DES-CBC", "RC4")
 ALGORITHM_CHOICES = list(ALGORITHMS) + ["ALL"]
 _DUMMY_HASH = generate_password_hash("dummy-password-for-timing")
 

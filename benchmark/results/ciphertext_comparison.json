@@ -1,46 +1,10 @@
 {
   "bit_flip_in_ciphertext_block_2": {
-    "AES-CBC": {
-      "corrupted_blocks": [
-        2,
-        3
-      ],
-      "plaintext_returned": true,
-      "result": "decrypted with errors",
-      "wrong_bits_per_plaintext_block": [
-        0,
-        0,
-        60,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
+    "AES-GCM": {
+      "plaintext_returned": false,
+      "result": "decryption rejected (authentication/padding failure)"
     },
-    "AES-CFB": {
-      "corrupted_blocks": [
-        2,
-        3
-      ],
-      "plaintext_returned": true,
-      "result": "decrypted with errors",
-      "wrong_bits_per_plaintext_block": [
-        0,
-        0,
-        1,
-        71,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    "AES-CTR": {
+    "DES-CBC": {
       "corrupted_blocks": [
         2
       ],
@@ -49,7 +13,7 @@
       "wrong_bits_per_plaintext_block": [
         0,
         0,
-        1,
+        33,
         0,
         0,
         0,
@@ -59,11 +23,7 @@
         0
       ]
     },
-    "AES-GCM": {
-      "plaintext_returned": false,
-      "result": "decryption rejected (authentication/padding failure)"
-    },
-    "AES-OFB": {
+    "RC4": {
       "corrupted_blocks": [
         2
       ],
@@ -84,36 +44,6 @@
     }
   },
   "ciphertext_size_by_plaintext_length": {
-    "AES-CBC": {
-      "0": 16,
-      "1": 16,
-      "1000": 1008,
-      "15": 16,
-      "16": 32,
-      "17": 32,
-      "31": 32,
-      "32": 48
-    },
-    "AES-CFB": {
-      "0": 0,
-      "1": 1,
-      "1000": 1000,
-      "15": 15,
-      "16": 16,
-      "17": 17,
-      "31": 31,
-      "32": 32
-    },
-    "AES-CTR": {
-      "0": 0,
-      "1": 1,
-      "1000": 1000,
-      "15": 15,
-      "16": 16,
-      "17": 17,
-      "31": 31,
-      "32": 32
-    },
     "AES-GCM": {
       "0": 16,
       "1": 17,
@@ -124,7 +54,17 @@
       "31": 47,
       "32": 48
     },
-    "AES-OFB": {
+    "DES-CBC": {
+      "0": 8,
+      "1": 8,
+      "1000": 1008,
+      "15": 16,
+      "16": 24,
+      "17": 24,
+      "31": 32,
+      "32": 40
+    },
+    "RC4": {
       "0": 0,
       "1": 1,
       "1000": 1000,
@@ -138,98 +78,60 @@
   "note": "Fixed LAB key/IV for reproducibility only.",
   "note_fresh_iv": "Values of bit_difference_fraction here use os.urandom and vary slightly between runs (about 0.5).",
   "pairwise_bit_difference_fraction": {
-    "AES-CBC vs AES-CFB": 0.4962,
-    "AES-CBC vs AES-CTR": 0.4977,
-    "AES-CBC vs AES-GCM": 0.4984,
-    "AES-CBC vs AES-OFB": 0.5056,
-    "AES-CFB vs AES-CTR": 0.499,
-    "AES-CFB vs AES-GCM": 0.498,
-    "AES-CFB vs AES-OFB": 0.4978,
-    "AES-CTR vs AES-GCM": 0.4995,
-    "AES-OFB vs AES-CTR": 0.5001,
-    "AES-OFB vs AES-GCM": 0.5028
+    "AES-GCM vs DES-CBC": 0.4981,
+    "AES-GCM vs RC4": 0.5022,
+    "DES-CBC vs RC4": 0.5024
   },
   "pairwise_first_block_identical": {
-    "AES-CBC vs AES-CFB": false,
-    "AES-CBC vs AES-CTR": false,
-    "AES-CBC vs AES-GCM": false,
-    "AES-CBC vs AES-OFB": false,
-    "AES-CFB vs AES-CTR": true,
-    "AES-CFB vs AES-GCM": false,
-    "AES-CFB vs AES-OFB": true,
-    "AES-CTR vs AES-GCM": false,
-    "AES-OFB vs AES-CTR": true,
-    "AES-OFB vs AES-GCM": false
+    "AES-GCM vs DES-CBC": false,
+    "AES-GCM vs RC4": false,
+    "DES-CBC vs RC4": false
   },
   "plaintext_bytes": 4096,
   "plaintext_sha256": "a0651f6bd4b6525842bdfe1da7c1b2a12127d6d82ae77470cf4cd12c856cd547",
   "repeated_block_plaintext_duplicate_ciphertext_blocks_of_8": {
-    "AES-CBC": 0,
-    "AES-CFB": 0,
-    "AES-CTR": 0,
     "AES-ECB (demonstration only, NOT used)": 7,
     "AES-GCM": 0,
-    "AES-OFB": 0
+    "DES-CBC": 0,
+    "RC4": 0
   },
   "same_key_fresh_random_iv_twice": {
-    "AES-CBC": {
-      "bit_difference_fraction": 0.5001,
-      "identical": false
-    },
-    "AES-CFB": {
-      "bit_difference_fraction": 0.5057,
-      "identical": false
-    },
-    "AES-CTR": {
-      "bit_difference_fraction": 0.5013,
-      "identical": false
-    },
     "AES-GCM": {
-      "bit_difference_fraction": 0.497,
+      "bit_difference_fraction": 0.5009,
       "identical": false
     },
-    "AES-OFB": {
-      "bit_difference_fraction": 0.4997,
+    "DES-CBC": {
+      "bit_difference_fraction": 0.5006,
       "identical": false
+    },
+    "RC4": {
+      "bit_difference_fraction": 0.0,
+      "identical": true
     }
   },
   "same_key_iv_plaintext": {
-    "AES-CBC": {
-      "ciphertext_bytes": 4112,
-      "first_16_bytes_hex": "a106507a11b40beb11baff018f9f92ce",
-      "overhead_bytes": 16,
-      "sha256": "6ad9b59065f0d084b7961571ae154ddcba29fef38818c24a80ec923f8076a084"
-    },
-    "AES-CFB": {
-      "ciphertext_bytes": 4096,
-      "first_16_bytes_hex": "bc31aab9f7c52e697eee84d59d725194",
-      "overhead_bytes": 0,
-      "sha256": "e06c37cbfee7e60b03aaee4805ffd1d10ef74b56156c12d08f417d4f6efb0449"
-    },
-    "AES-CTR": {
-      "ciphertext_bytes": 4096,
-      "first_16_bytes_hex": "bc31aab9f7c52e697eee84d59d725194",
-      "overhead_bytes": 0,
-      "sha256": "bad6a2973acd409601c7009ad63f476dc86eda0d87238d8681e4f1cf52335fcb"
-    },
     "AES-GCM": {
       "ciphertext_bytes": 4112,
       "first_16_bytes_hex": "996e64779b51addfc5b35e80fbcdb986",
       "overhead_bytes": 16,
       "sha256": "e128b4bd54b5cbf9c35932128cd7251592936a4d2dc0f1643ca31d7368ee1e88"
     },
-    "AES-OFB": {
+    "DES-CBC": {
+      "ciphertext_bytes": 4104,
+      "first_16_bytes_hex": "c0620a4d53f60c80f696ec12685f6490",
+      "overhead_bytes": 8,
+      "sha256": "9314699dcc9f8265190873600f91f7bfe4f783ebbe4f3b4e3827f81c960dc9b5"
+    },
+    "RC4": {
       "ciphertext_bytes": 4096,
-      "first_16_bytes_hex": "bc31aab9f7c52e697eee84d59d725194",
+      "first_16_bytes_hex": "c2b88aeffcf3c1822fc9711065695785",
       "overhead_bytes": 0,
-      "sha256": "b0463e38278931f4b49b8d8c5b62fb7c34dd8e8e8be6ce743db66f9cccee13c8"
+      "sha256": "d259dbb11652a148edc81626290a54610c3f0efa95eb428c236992f131da0677"
     }
   },
   "same_key_same_iv_twice_identical": {
-    "AES-CBC": true,
-    "AES-CFB": true,
-    "AES-CTR": true,
     "AES-GCM": true,
-    "AES-OFB": true
+    "DES-CBC": true,
+    "RC4": true
   }
 }

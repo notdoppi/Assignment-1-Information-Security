@@ -1,7 +1,7 @@
-"""Reproducible benchmark of AES modes (+ GCM, + legacy DES/RC4 as reference).
+"""Reproducible benchmark comparing AES-GCM, legacy DES-CBC, and legacy RC4.
 
 Method summary (see report/report.md for the justification):
-  * identical plaintext bytes for every algorithm; same 256-bit key for all AES modes
+  * identical plaintext bytes for every algorithm; same 256-bit key for AES-GCM
   * fresh random IV/nonce per trial, generated OUTSIDE the timed region
   * time.perf_counter_ns around ONLY cipher setup + update + finalize (+ PKCS#7 pad/unpad for CBC)
   * file I/O measured separately; web "download" measured end-to-end through the Flask app
@@ -15,10 +15,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 import cryptography
-from vault_crypto import ALGORITHMS, REQUIRED_AES_MODES, raw_decrypt, raw_encrypt
+from vault_crypto import ALGORITHMS, REQUIRED_ALGORITHMS, raw_decrypt, raw_encrypt
 from benchmark import ciphertext_comparison, generate_fixtures
 
-GROUPS = {**{m: "required AES mode" for m in REQUIRED_AES_MODES}, "AES-GCM": "extra: authenticated (AEAD)",
+GROUPS = {"AES-GCM": "authenticated encryption (AEAD)",
           "DES-CBC": "legacy reference (obsolete)", "RC4": "legacy reference (obsolete)"}
 BENCH_KEY = hashlib.sha256(b"BENCHMARK-ONLY key").digest()  # benchmark-only; DES uses the first 8 bytes
 

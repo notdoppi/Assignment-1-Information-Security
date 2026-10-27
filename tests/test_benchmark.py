@@ -3,7 +3,7 @@ import csv, json, os, shutil, tempfile, unittest
 from pathlib import Path
 
 from benchmark import ciphertext_comparison, generate_fixtures, make_plots, run_benchmark
-from vault_crypto import ALGORITHMS, REQUIRED_AES_MODES, raw_decrypt, raw_encrypt
+from vault_crypto import ALGORITHMS, REQUIRED_ALGORITHMS, raw_decrypt, raw_encrypt
 
 TRIALS, WARMUP = 4, 1
 ONLY = ["random_1KiB.bin", "random_64KiB.bin", "text_1MiB.txt", "document_synthetic.pdf"]
@@ -33,9 +33,9 @@ class Runner(unittest.TestCase):
     def tearDownClass(cls):
         shutil.rmtree(cls.tmp, ignore_errors=True)
 
-    def test_every_required_mode_is_benchmarked(self):
+    def test_three_selected_algorithms_are_benchmarked(self):
         rows = list(csv.DictReader(open(self.out / "raw_results.csv")))
-        self.assertTrue(set(REQUIRED_AES_MODES) <= {r["algorithm"] for r in rows})
+        self.assertEqual(set(REQUIRED_ALGORITHMS), {r["algorithm"] for r in rows})
 
     def test_output_files_exist_and_are_complete(self):
         for f in ("raw_results.csv", "summary.csv", "io_results.csv", "app_download_results.csv",
@@ -63,8 +63,8 @@ class Runner(unittest.TestCase):
     def test_summary_statistics_are_consistent(self):
         import statistics as st
         raw = list(csv.DictReader(open(self.out / "raw_results.csv"))); summ = list(csv.DictReader(open(self.out / "summary.csv")))
-        s = next(r for r in summ if r["algorithm"] == "AES-CTR" and r["op"] == "encrypt" and r["file"] == "text_1MiB.txt")
-        vals = [int(r["time_ns"]) / 1e9 for r in raw if r["algorithm"] == "AES-CTR" and r["op"] == "encrypt" and r["file"] == "text_1MiB.txt"]
+        s = next(r for r in summ if r["algorithm"] == "AES-GCM" and r["op"] == "encrypt" and r["file"] == "text_1MiB.txt")
+        vals = [int(r["time_ns"]) / 1e9 for r in raw if r["algorithm"] == "AES-GCM" and r["op"] == "encrypt" and r["file"] == "text_1MiB.txt"]
         self.assertAlmostEqual(float(s["mean_s"]), st.fmean(vals), places=7)
         self.assertAlmostEqual(float(s["median_s"]), st.median(vals), places=7)
         self.assertAlmostEqual(float(s["stdev_s"]), st.stdev(vals), places=7)
@@ -86,9 +86,8 @@ class Runner(unittest.TestCase):
     def test_ciphertext_comparison_content(self):
         c = json.loads((self.out / "ciphertext_comparison.json").read_text())
         self.assertEqual(c["same_key_same_iv_twice_identical"], {m: True for m in ciphertext_comparison.MODES})
-        self.assertTrue(all(not v["identical"] for v in c["same_key_fresh_random_iv_twice"].values()))
-        self.assertEqual(c["bit_flip_in_ciphertext_block_2"]["AES-CTR"]["corrupted_blocks"], [2])
-        self.assertEqual(c["bit_flip_in_ciphertext_block_2"]["AES-CBC"]["corrupted_blocks"], [2, 3])
+        self.assertTrue(all(not c["same_key_fresh_random_iv_twice"][m]["identical"] for m in ("AES-GCM", "DES-CBC")))
+        self.assertTrue(c["same_key_fresh_random_iv_twice"]["RC4"]["identical"])
         self.assertFalse(c["bit_flip_in_ciphertext_block_2"]["AES-GCM"]["plaintext_returned"])
 
 
@@ -100,12 +99,13 @@ class Reproducibility(unittest.TestCase):
                   "repeated_block_plaintext_duplicate_ciphertext_blocks_of_8", "bit_flip_in_ciphertext_block_2"):
             self.assertEqual(a[k], b[k], k)
 
-    def test_required_modes_on_varied_sizes_with_fixed_lab_key(self):
-        key, iv = ciphertext_comparison.LAB_KEY, ciphertext_comparison.LAB_IV
-        for m in REQUIRED_AES_MODES:
+    def test_selected_algorithms_on_varied_sizes_with_fixed_lab_key(self):
+        key = ciphertext_comparison.LAB_KEY
+        for m in REQUIRED_ALGORITHMS:
             for n in (0, 1, 15, 16, 17, 1000, 65537):
                 data = bytes((i * 31) % 256 for i in range(n))
-                self.assertEqual(raw_decrypt(m, key, iv, raw_encrypt(m, key, iv, data)), data, (m, n))
+                iv = ciphertext_comparison._iv(m)
+                self.assertEqual(raw_decrypt(m, key[:__import__("vault_crypto").ALGORITHMS[m]["key_len"]], iv, raw_encrypt(m, key[:__import__("vault_crypto").ALGORITHMS[m]["key_len"]], iv, data)), data, (m, n))
 
 
 if __name__ == "__main__":

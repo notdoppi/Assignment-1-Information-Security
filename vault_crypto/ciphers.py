@@ -49,15 +49,33 @@ class UnsupportedAlgorithm(ValueError):
 
 # name -> (family, key_len, iv_len, needs_padding, authenticated_by_itself)
 ALGORITHMS = {
-    "AES-CBC": dict(family="AES", mode="CBC", key_len=32, iv_len=16, padded=True,  aead=False),
-    "AES-CFB": dict(family="AES", mode="CFB", key_len=32, iv_len=16, padded=False, aead=False),
-    "AES-OFB": dict(family="AES", mode="OFB", key_len=32, iv_len=16, padded=False, aead=False),
-    "AES-CTR": dict(family="AES", mode="CTR", key_len=32, iv_len=16, padded=False, aead=False),
-    "AES-GCM": dict(family="AES", mode="GCM", key_len=32, iv_len=12, padded=False, aead=True),
-    "DES-CBC": dict(family="DES", mode="CBC", key_len=8,  iv_len=8,  padded=True,  aead=False),
-    "RC4":     dict(family="RC4", mode="STREAM", key_len=32, iv_len=0, padded=False, aead=False),
+    "AES-GCM": dict(
+        family="AES",
+        mode="GCM",
+        key_len=32,
+        iv_len=12,
+        padded=False,
+        aead=True,
+    ),
+    "DES-CBC": dict(
+        family="DES",
+        mode="CBC",
+        key_len=8,
+        iv_len=8,
+        padded=True,
+        aead=False,
+    ),
+    "RC4": dict(
+        family="RC4",
+        mode="STREAM",
+        key_len=32,
+        iv_len=0,
+        padded=False,
+        aead=False,
+    ),
 }
-REQUIRED_AES_MODES = ("AES-CBC", "AES-CFB", "AES-OFB", "AES-CTR")
+
+REQUIRED_ALGORITHMS = ("AES-GCM", "DES-CBC", "RC4")
 GCM_TAG_LEN = 16
 MAC_LEN = 32
 

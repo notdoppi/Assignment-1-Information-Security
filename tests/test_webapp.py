@@ -57,7 +57,7 @@ class Base(unittest.TestCase):
     def signup_login(self, client, user):
         self.register(client, user); return self.login(client, user)
 
-    def upload(self, client, name, data, category="document", algo="AES-CBC", pw=FPW, mime=None):
+    def upload(self, client, name, data, category="document", algo="AES-GCM", pw=FPW, mime=None):
         return client.post("/dashboard", data={
             "csrf_token": self.token(client, "/dashboard"), "file_type": category, "algorithm": algo, "password": pw,
             "file": (io.BytesIO(data), name, mime or "application/octet-stream")}, content_type="multipart/form-data")
@@ -184,7 +184,7 @@ class UploadDownload(Base):
         data = sample(".png", 3000)
         self.upload(self.c, "ktp.png", data, "id_card", "ALL")
         rows = self.rows()
-        self.assertEqual({r["algorithm"] for r in rows}, {"AES-CBC", "DES-CBC", "RC4"})
+        self.assertEqual({r["algorithm"] for r in rows}, {"AES-GCM", "DES-CBC", "RC4"})
         self.assertEqual(len({r["group_id"] for r in rows}), 1)
         for r in rows:
             self.assertEqual(self.download(self.c, r["id"]).data, data)
@@ -194,7 +194,7 @@ class UploadDownload(Base):
             with self.subTest(ext=ext):
                 data = sample(ext, 4321)
                 cat = CATEGORY.get(ext, "document")
-                self.upload(self.c, f"file{ext}", data, cat, "AES-CTR")
+                self.upload(self.c, f"file{ext}", data, cat, "AES-GCM")
                 row = self.rows("SELECT * FROM encrypted_files ORDER BY id DESC")[0]
                 self.assertEqual(row["category"], cat)
                 self.assertEqual(self.download(self.c, row["id"]).data, data)
@@ -207,13 +207,13 @@ class UploadDownload(Base):
     def test_stored_blob_is_ciphertext_and_metadata_complete(self):
         marker = b"TOP-SECRET-MARKER-" * 20
         data = HEADERS[".pdf"] + marker
-        self.upload(self.c, "s.pdf", data, "document", "AES-CBC")
+        self.upload(self.c, "s.pdf", data, "document", "AES-GCM")
         row = self.rows()[0]
         self.assertNotIn(b"TOP-SECRET-MARKER", bytes(row["ciphertext"]))
         self.assertEqual((row["user_id"], row["original_filename"], row["mime_type"], row["algorithm"],
-                          row["plaintext_size"]), (1, "s.pdf", "application/pdf", "AES-CBC", len(data)))
-        self.assertEqual(len(row["salt"]), 16); self.assertEqual(len(row["iv"]), 16)
-        self.assertEqual(len(row["mac"]), 32); self.assertEqual(row["ciphertext_size"], len(row["ciphertext"]))
+                          row["plaintext_size"]), (1, "s.pdf", "application/pdf", "AES-GCM", len(data)))
+        self.assertEqual(len(row["salt"]), 16); self.assertEqual(len(row["iv"]), 12)
+        self.assertEqual(len(row["mac"]), 0); self.assertEqual(row["ciphertext_size"], len(row["ciphertext"]))
         self.assertTrue(row["uploaded_at"])
         for root, _d, files in os.walk(os.getcwd()):  # plaintext never written to disk
             for f in files:
@@ -248,7 +248,7 @@ class UploadDownload(Base):
         self.assertEqual(self.rows(), [])
         huge = HEADERS[".mp4"] + os.urandom(8 * 1024 * 1024)  # beyond MAX_CONTENT_LENGTH
         r = self.c.post("/dashboard", data={"csrf_token": self.token(self.c, "/dashboard"), "file_type": "video",
-                        "algorithm": "AES-CBC", "password": FPW, "file": (io.BytesIO(huge), "h.mp4")},
+                        "algorithm": "AES-GCM", "password": FPW, "file": (io.BytesIO(huge), "h.mp4")},
                         content_type="multipart/form-data")
         self.assertEqual(r.status_code, 413); self.assertEqual(self.rows(), [])
 
@@ -289,14 +289,14 @@ class Tampering(Base):
 
     def test_invalid_or_missing_metadata(self):
         cases = ["algorithm='BOGUS'", "kdf_iterations=0", "kdf_iterations=999999999999", "iv=x''", "salt=x''",
-                 "mac=x''", "plaintext_size=1", "algorithm='AES-OFB'"]
+                 "plaintext_size=1", "algorithm='AES-OFB'"]
         for c in cases:
-            fid = self._fresh("AES-CFB")
+            fid = self._fresh("AES-GCM")
             self.alter(f"UPDATE encrypted_files SET {c} WHERE id=?", (fid,))
             self._assert_rejected(fid, c)
 
     def test_null_metadata_blocked_by_schema(self):
-        fid = self._fresh("AES-CBC")
+        fid = self._fresh("AES-GCM")
         with self.assertRaises(sqlite3.IntegrityError):
             self.alter("UPDATE encrypted_files SET salt=NULL WHERE id=?", (fid,))
 
