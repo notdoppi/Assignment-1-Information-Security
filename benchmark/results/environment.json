@@ -1,0 +1,41 @@
+{
+  "python": "3.12.3",
+  "python_impl": "CPython",
+  "cryptography": "46.0.6",
+  "openssl": "OpenSSL 3.5.5 27 Jan 2026",
+  "os": "Linux-6.18.44-fc-v153-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "processor": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+  "logical_cpus": 1,
+  "cpu_reports_aes_instructions": true,
+  "perf_counter_resolution_s": 1e-09,
+  "perf_counter_monotonic": true,
+  "started_utc": "2026-10-26T09:24:14Z",
+  "trials": 30,
+  "warmup": 3,
+  "seed": 1234,
+  "algorithms": [
+    "AES-CBC",
+    "AES-CFB",
+    "AES-OFB",
+    "AES-CTR",
+    "AES-GCM",
+    "DES-CBC",
+    "RC4"
+  ],
+  "files": {
+    "document_synthetic.pdf": 559953,
+    "image_synthetic.png": 1695017,
+    "random_10MiB.bin": 10485760,
+    "random_1KiB.bin": 1024,
+    "random_1MiB.bin": 1048576,
+    "random_50MiB.bin": 52428800,
+    "random_64KiB.bin": 65536,
+    "text_1MiB.txt": 1048576,
+    "video_synthetic.avi": 460954
+  },
+  "fixtures_manifest_sha256": "a2d733ee1e46b98587e1c74949e9648cbc5ba334be7eae035208c09f97ef4562",
+  "timed_region": "cipher setup + update + finalize (+PKCS7 pad/unpad); excludes IV generation, file I/O, KDF, verification",
+  "app_download_trials": 10,
+  "finished_utc": "2026-10-26T09:28:54Z"
+}

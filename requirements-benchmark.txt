@@ -1,0 +1,10 @@
+# Extra packages for the benchmark component.
+# REQUIRED to run the full test suite (tests/test_benchmark.py imports matplotlib and the
+# fixture generator needs Pillow) and to regenerate benchmark graphs.
+matplotlib>=3.8
+numpy>=1.26          # matplotlib dependency; also used by the optional video fixture
+pillow>=10.0         # synthetic PNG fixture
+# Optional: without it the synthetic AVI video fixture is simply skipped.
+opencv-python-headless>=4.8
+# The PDF report (report/build_report.py) additionally needs the command-line tools
+# `pandoc` and LibreOffice (`soffice`); if they are missing, only report.md is produced.

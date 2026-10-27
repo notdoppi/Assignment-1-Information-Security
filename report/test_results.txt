@@ -1,0 +1,167 @@
+test_fixture_generation_is_reproducible (tests.test_benchmark.Fixtures.test_fixture_generation_is_reproducible) ... ok
+test_lab_comparison_is_deterministic_apart_from_fresh_iv_noise (tests.test_benchmark.Reproducibility.test_lab_comparison_is_deterministic_apart_from_fresh_iv_noise) ... ok
+test_required_modes_on_varied_sizes_with_fixed_lab_key (tests.test_benchmark.Reproducibility.test_required_modes_on_varied_sizes_with_fixed_lab_key) ... ok
+/usr/local/lib/python3.12/dist-packages/markupsafe/__init__.py:129: ResourceWarning: unclosed file <_io.FileIO name=3 mode='rb+' closefd=True>
+  return super().__new__(cls, object)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/local/lib/python3.12/dist-packages/markupsafe/__init__.py:129: ResourceWarning: unclosed file <_io.FileIO name=4 mode='rb+' closefd=True>
+  return super().__new__(cls, object)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/local/lib/python3.12/dist-packages/markupsafe/__init__.py:129: ResourceWarning: unclosed file <_io.FileIO name=5 mode='rb+' closefd=True>
+  return super().__new__(cls, object)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/local/lib/python3.12/dist-packages/markupsafe/__init__.py:129: ResourceWarning: unclosed file <_io.FileIO name=6 mode='rb+' closefd=True>
+  return super().__new__(cls, object)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+test_ciphertext_comparison_content (tests.test_benchmark.Runner.test_ciphertext_comparison_content) ... ok
+test_environment_records_required_details (tests.test_benchmark.Runner.test_environment_records_required_details) ... ok
+test_every_required_mode_is_benchmarked (tests.test_benchmark.Runner.test_every_required_mode_is_benchmarked) ... /home/claude/fix/my_web_crypto_final/tests/test_benchmark.py:37: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpvrvwwtnh/out/raw_results.csv' mode='r' encoding='utf-8'>
+  rows = list(csv.DictReader(open(self.out / "raw_results.csv")))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_graphs_are_generated (tests.test_benchmark.Runner.test_graphs_are_generated) ... /home/claude/fix/my_web_crypto_final/benchmark/make_plots.py:14: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpvrvwwtnh/out/summary.csv' mode='r' encoding='utf-8'>
+  def read(p): return list(csv.DictReader(open(p)))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/claude/fix/my_web_crypto_final/benchmark/make_plots.py:14: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpvrvwwtnh/out/raw_results.csv' mode='r' encoding='utf-8'>
+  def read(p): return list(csv.DictReader(open(p)))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/local/lib/python3.12/dist-packages/cycler/__init__.py:262: ResourceWarning: unclosed file <_io.FileIO name=3 mode='rb+' closefd=True>
+  yield dict(left)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/local/lib/python3.12/dist-packages/cycler/__init__.py:262: ResourceWarning: unclosed file <_io.FileIO name=4 mode='rb+' closefd=True>
+  yield dict(left)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/local/lib/python3.12/dist-packages/cycler/__init__.py:262: ResourceWarning: unclosed file <_io.FileIO name=6 mode='rb+' closefd=True>
+  yield dict(left)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/local/lib/python3.12/dist-packages/cycler/__init__.py:262: ResourceWarning: unclosed file <_io.FileIO name=8 mode='rb+' closefd=True>
+  yield dict(left)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/local/lib/python3.12/dist-packages/cycler/__init__.py:262: ResourceWarning: unclosed file <_io.BufferedRandom name=7>
+  yield dict(left)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/local/lib/python3.12/dist-packages/cycler/__init__.py:262: ResourceWarning: unclosed file <_io.BufferedRandom name=5>
+  yield dict(left)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/claude/fix/my_web_crypto_final/benchmark/make_plots.py:14: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpvrvwwtnh/out/app_download_results.csv' mode='r' encoding='utf-8'>
+  def read(p): return list(csv.DictReader(open(p)))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_graphs_from_full_results_produce_all_five_figures (tests.test_benchmark.Runner.test_graphs_from_full_results_produce_all_five_figures) ... /home/claude/fix/my_web_crypto_final/benchmark/make_plots.py:14: ResourceWarning: unclosed file <_io.TextIOWrapper name='/home/claude/fix/my_web_crypto_final/benchmark/results/summary.csv' mode='r' encoding='utf-8'>
+  def read(p): return list(csv.DictReader(open(p)))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/claude/fix/my_web_crypto_final/benchmark/make_plots.py:14: ResourceWarning: unclosed file <_io.TextIOWrapper name='/home/claude/fix/my_web_crypto_final/benchmark/results/raw_results.csv' mode='r' encoding='utf-8'>
+  def read(p): return list(csv.DictReader(open(p)))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/claude/fix/my_web_crypto_final/benchmark/make_plots.py:14: ResourceWarning: unclosed file <_io.TextIOWrapper name='/home/claude/fix/my_web_crypto_final/benchmark/results/app_download_results.csv' mode='r' encoding='utf-8'>
+  def read(p): return list(csv.DictReader(open(p)))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_output_files_exist_and_are_complete (tests.test_benchmark.Runner.test_output_files_exist_and_are_complete) ... /home/claude/fix/my_web_crypto_final/tests/test_benchmark.py:44: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpvrvwwtnh/out/raw_results.csv' mode='r' encoding='utf-8'>
+  raw = list(csv.DictReader(open(self.out / "raw_results.csv")))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/claude/fix/my_web_crypto_final/tests/test_benchmark.py:49: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpvrvwwtnh/out/summary.csv' mode='r' encoding='utf-8'>
+  summ = list(csv.DictReader(open(self.out / "summary.csv")))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/claude/fix/my_web_crypto_final/tests/test_benchmark.py:54: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpvrvwwtnh/out/io_results.csv' mode='r' encoding='utf-8'>
+  io = list(csv.DictReader(open(self.out / "io_results.csv")))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_summary_statistics_are_consistent (tests.test_benchmark.Runner.test_summary_statistics_are_consistent) ... /home/claude/fix/my_web_crypto_final/tests/test_benchmark.py:65: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpvrvwwtnh/out/raw_results.csv' mode='r' encoding='utf-8'>
+  raw = list(csv.DictReader(open(self.out / "raw_results.csv"))); summ = list(csv.DictReader(open(self.out / "summary.csv")))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/claude/fix/my_web_crypto_final/tests/test_benchmark.py:65: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpvrvwwtnh/out/summary.csv' mode='r' encoding='utf-8'>
+  raw = list(csv.DictReader(open(self.out / "raw_results.csv"))); summ = list(csv.DictReader(open(self.out / "summary.csv")))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_cbc_corrupts_block_and_flips_one_bit_in_next (tests.test_crypto.ErrorPropagation.test_cbc_corrupts_block_and_flips_one_bit_in_next) ... ok
+test_cfb_flips_bit_then_garbles_next_block (tests.test_crypto.ErrorPropagation.test_cfb_flips_bit_then_garbles_next_block) ... ok
+test_ctr_ofb_flip_one_byte_only (tests.test_crypto.ErrorPropagation.test_ctr_ofb_flip_one_byte_only) ... ok
+test_aes_cbc (tests.test_crypto.KnownAnswer.test_aes_cbc) ... ok
+test_aes_cfb (tests.test_crypto.KnownAnswer.test_aes_cfb) ... ok
+test_aes_ctr (tests.test_crypto.KnownAnswer.test_aes_ctr) ... ok
+test_aes_ofb (tests.test_crypto.KnownAnswer.test_aes_ofb) ... ok
+test_des_classic_vector (tests.test_crypto.KnownAnswer.test_des_classic_vector) ... ok
+test_rc4_rfc6229 (tests.test_crypto.KnownAnswer.test_rc4_rfc6229) ... ok
+test_different_modes_give_different_ciphertext (tests.test_crypto.RoundTrip.test_different_modes_give_different_ciphertext) ... ok
+test_every_algorithm_every_size (tests.test_crypto.RoundTrip.test_every_algorithm_every_size) ... ok
+test_fresh_randomness_gives_different_ciphertexts (tests.test_crypto.RoundTrip.test_fresh_randomness_gives_different_ciphertexts) ... ok
+test_padding_behaviour (tests.test_crypto.RoundTrip.test_padding_behaviour) ... ok
+test_required_modes_raw_roundtrip_including_empty (tests.test_crypto.RoundTrip.test_required_modes_raw_roundtrip_including_empty) ... ok
+test_same_key_and_iv_is_deterministic (tests.test_crypto.RoundTrip.test_same_key_and_iv_is_deterministic) ... ok
+test_algorithm_swap_is_rejected (tests.test_crypto.Tamper.test_algorithm_swap_is_rejected) ... ok
+test_flipped_ciphertext_bit_is_rejected_never_returned (tests.test_crypto.Tamper.test_flipped_ciphertext_bit_is_rejected_never_returned) ... ok
+test_invalid_metadata (tests.test_crypto.Tamper.test_invalid_metadata) ... ok
+test_tampered_iv_salt_mac_iterations_algorithm (tests.test_crypto.Tamper.test_tampered_iv_salt_mac_iterations_algorithm) ... ok
+test_truncated_and_extended_ciphertext (tests.test_crypto.Tamper.test_truncated_and_extended_ciphertext) ... ok
+test_unsupported_algorithm_on_encrypt (tests.test_crypto.Tamper.test_unsupported_algorithm_on_encrypt) ... ok
+test_wrong_password (tests.test_crypto.Tamper.test_wrong_password) ... ok
+test_anonymous_endpoints_redirect (tests.test_webapp.Auth.test_anonymous_endpoints_redirect) ... ok
+test_duplicate_weak_and_bad_usernames (tests.test_webapp.Auth.test_duplicate_weak_and_bad_usernames) ... ok
+test_invalid_logins (tests.test_webapp.Auth.test_invalid_logins) ... ok
+test_login_throttling (tests.test_webapp.Auth.test_login_throttling) ... ok
+test_logout_clears_session (tests.test_webapp.Auth.test_logout_clears_session) ... ok
+test_password_is_hashed (tests.test_webapp.Auth.test_password_is_hashed) ... ok
+test_register_and_login (tests.test_webapp.Auth.test_register_and_login) ... ok
+test_listing_is_scoped (tests.test_webapp.Authorization.test_listing_is_scoped) ... ok
+test_nonexistent_file_404 (tests.test_webapp.Authorization.test_nonexistent_file_404) ... ok
+test_other_user_cannot_download_even_with_right_password (tests.test_webapp.Authorization.test_other_user_cannot_download_even_with_right_password) ... ok
+test_other_user_cannot_read_meta_or_delete (tests.test_webapp.Authorization.test_other_user_cannot_read_meta_or_delete) ... ok
+test_owner_meta_excludes_secrets (tests.test_webapp.Authorization.test_owner_meta_excludes_secrets) ... ok
+test_404_is_generic (tests.test_webapp.ErrorPages.test_404_is_generic) ... ok
+test_500_does_not_leak (tests.test_webapp.ErrorPages.test_500_does_not_leak) ... [2026-10-27 07:55:35,328] ERROR in app: Exception on /boom [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/dist-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/claude/fix/my_web_crypto_final/tests/test_webapp.py", line 382, in boom
+    def boom(): raise RuntimeError("secret-internal-detail")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: secret-internal-detail
+ok
+test_nothing_written_outside_database (tests.test_webapp.PathTraversal.test_nothing_written_outside_database) ... ok
+test_traversal_in_uploaded_filename_is_neutralised (tests.test_webapp.PathTraversal.test_traversal_in_uploaded_filename_is_neutralised) ... ok
+test_traversal_in_urls (tests.test_webapp.PathTraversal.test_traversal_in_urls) ... ok
+test_survives_application_restart (tests.test_webapp.Persistence.test_survives_application_restart) ... ok
+test_cookie_flags_and_headers (tests.test_webapp.Security.test_cookie_flags_and_headers) ... ok
+test_csrf_required (tests.test_webapp.Security.test_csrf_required) ... ok
+test_default_secure_cookie_when_env_unset (tests.test_webapp.Security.test_default_secure_cookie_when_env_unset) ... ok
+test_env_can_disable_secure_cookie_for_local_http (tests.test_webapp.Security.test_env_can_disable_secure_cookie_for_local_http) ... ok
+test_secret_key_required_and_debug_off (tests.test_webapp.Security.test_secret_key_required_and_debug_off) ... ok
+test_corrupted_ciphertext_all_algorithms (tests.test_webapp.Tampering.test_corrupted_ciphertext_all_algorithms) ... ok
+test_invalid_or_missing_metadata (tests.test_webapp.Tampering.test_invalid_or_missing_metadata) ... ok
+test_null_metadata_blocked_by_schema (tests.test_webapp.Tampering.test_null_metadata_blocked_by_schema) ... ok
+test_truncated_ciphertext (tests.test_webapp.Tampering.test_truncated_ciphertext) ... ok
+test_all_file_types_and_categories (tests.test_webapp.UploadDownload.test_all_file_types_and_categories) ... ok
+test_all_three_required_algorithms_option (tests.test_webapp.UploadDownload.test_all_three_required_algorithms_option) ... ok
+test_delete_own_file (tests.test_webapp.UploadDownload.test_delete_own_file) ... ok
+test_each_algorithm_roundtrip_byte_for_byte (tests.test_webapp.UploadDownload.test_each_algorithm_roundtrip_byte_for_byte) ... ok
+test_empty_file_rejected (tests.test_webapp.UploadDownload.test_empty_file_rejected) ... ok
+test_large_video_like_upload (tests.test_webapp.UploadDownload.test_large_video_like_upload) ... ok
+test_oversized_upload (tests.test_webapp.UploadDownload.test_oversized_upload) ... /usr/local/lib/python3.12/dist-packages/jinja2/loaders.py:214: ResourceWarning: unclosed file <_io.FileIO name=5 mode='rb+' closefd=True>
+  with open(filename, encoding=self.encoding) as f:
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_stored_blob_is_ciphertext_and_metadata_complete (tests.test_webapp.UploadDownload.test_stored_blob_is_ciphertext_and_metadata_complete) ... /usr/local/lib/python3.12/dist-packages/jinja2/nodes.py:169: ResourceWarning: unclosed file <_io.FileIO name=5 mode='rb+' closefd=True>
+  def iter_child_nodes(
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/local/lib/python3.12/dist-packages/jinja2/nodes.py:169: ResourceWarning: unclosed file <_io.FileIO name=6 mode='rb+' closefd=True>
+  def iter_child_nodes(
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_unsupported_and_mismatched_types (tests.test_webapp.UploadDownload.test_unsupported_and_mismatched_types) ... ok
+test_wrong_password_returns_no_file (tests.test_webapp.UploadDownload.test_wrong_password_returns_no_file) ... ok
+
+----------------------------------------------------------------------
+Ran 69 tests in 31.232s
+
+OK

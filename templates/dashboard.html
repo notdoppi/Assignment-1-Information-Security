@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row g-4">
+    <!-- Form Upload & Enkripsi -->
+    <div class="col-lg-5">
+        <div class="card p-4 p-md-4">
+            <div class="d-flex align-items-center mb-3">
+                <div class="bg-primary bg-opacity-10 text-primary rounded-3 p-2 me-3">
+                    <i class="bi bi-cloud-arrow-up-fill fs-5"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold mb-0 text-dark">Unggah & Enkripsi Data</h5>
+                    <small class="text-muted">Lindungi file sensitif dengan algoritma kriptografi</small>
+                </div>
+            </div>
+            <hr class="text-muted opacity-25">
+            <form method="POST" enctype="multipart/form-data" class="needs-validation">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold text-secondary">Pilih Berkas (KTP, Dokumen, Video)</label>
+                    <input type="file" name="file" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold text-secondary">Kategori Privasi (GDPR / UU PDP)</label>
+                    <select name="file_type" class="form-select">
+                        {% for key, label in CATEGORIES.items() %}<option value="{{ key }}">{{ label }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold text-secondary">Algoritma Kriptografi</label>
+                    <select name="algorithm" class="form-select">
+                        <option value="AES-CBC">AES-256-CBC (+HMAC)</option>
+                        <option value="AES-CFB">AES-256-CFB (+HMAC)</option>
+                        <option value="AES-OFB">AES-256-OFB (+HMAC)</option>
+                        <option value="AES-CTR">AES-256-CTR (+HMAC)</option>
+                        <option value="AES-GCM">AES-256-GCM (authenticated)</option>
+                        <option value="DES-CBC">DES-CBC (obsolete, demo only)</option>
+                        <option value="RC4">RC4 (obsolete, demo only)</option>
+                        <option value="ALL">ALL: AES-CBC + DES + RC4 (3 copies)</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label small fw-semibold text-secondary">Password Enkripsi Khusus Berkas</label>
+                    <input type="password" name="password" class="form-control" placeholder="Minimal 8 karakter" required minlength="8">
+                </div>
+                <button type="submit" class="btn btn-custom w-100 py-2 shadow-sm">
+                    <i class="bi bi-shield-shaded me-1"></i> Proses Enkripsi & Simpan
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Daftar File Tersimpan -->
+    <div class="col-lg-7">
+        <div class="card p-4 p-md-4 h-100">
+            <div class="d-flex align-items-center mb-3">
+                <div class="bg-success bg-opacity-10 text-success rounded-3 p-2 me-3">
+                    <i class="bi bi-database-fill-check fs-5"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold mb-0 text-dark">Brankas Data Terenkripsi</h5>
+                    <small class="text-muted">Daftar file aman yang tersimpan di dalam database</small>
+                </div>
+            </div>
+            <hr class="text-muted opacity-25">
+            <div class="table-responsive mt-2">
+                <table class="table align-middle">
+                    <thead class="table-light text-secondary small text-uppercase">
+                        <tr>
+                            <th>Berkas</th>
+                            <th>Kategori</th>
+                            <th>Algoritma</th>
+                            <th>Ukuran</th>
+                            <th class="text-end">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for f in files %}
+                        <tr>
+                            <td>
+                                <div class="fw-semibold text-dark text-truncate" style="max-width: 150px;" title="{{ f.original_filename }}">{{ f.original_filename }}</div>
+                            </td>
+                            <td><span class="text-muted small">{{ CATEGORIES.get(f.category, f.category) }}</span><br><span class="text-muted" style="font-size:.7rem">{{ f.uploaded_at }}</span></td>
+                            <td>
+                                <span class="badge bg-dark bg-opacity-75 text-white font-monospace">{{ f.algorithm }}</span>
+                            </td>
+                            <td class="small text-muted">{{ f.plaintext_size }} B<br>({{ f.ciphertext_size }} B enc.)</td>
+                            <td class="text-end">
+                                <form action="/decrypt/{{ f.id }}" method="POST" class="d-inline-flex gap-1 justify-content-end">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <input type="password" name="password" placeholder="Password" class="form-control form-control-sm" style="width: 105px;" required>
+                                    <button type="submit" class="btn btn-sm btn-outline-dark px-2" title="Unduh hasil dekripsi">
+                                        <i class="bi bi-unlock"></i>
+                                    </button>
+                                </form>
+                                <form action="/files/{{ f.id }}/delete" method="POST" class="d-inline" onsubmit="return confirm('Hapus berkas ini?')">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger px-2" title="Hapus"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="bi bi-folder2-open display-6 d-block mb-2 text-secondary opacity-50"></i>
+                                Belum ada data atau berkas yang diunggah ke brankas.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
