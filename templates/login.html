@@ -1,37 +1,13 @@
 {% extends "base.html" %}
+{% block title %}Sign in · Health Vault{% endblock %}
 {% block content %}
-<div class="row justify-content-center align-items-center" style="min-height: 65vh;">
-    <div class="col-md-5 col-lg-4">
-        <div class="card p-4 p-md-5">
-            <div class="text-center mb-4">
-                <div class="bg-dark text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 55px; height: 55px;">
-                    <i class="bi bi-lock-fill fs-4"></i>
-                </div>
-                <h3 class="fw-bold fs-4 text-dark">Selamat Datang</h3>
-                <p class="text-muted small">Silakan masuk ke brankas data aman Anda</p>
-            </div>
-            <form method="POST">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <div class="mb-3">
-                    <label class="form-label small fw-semibold text-secondary">Username</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-muted"></i></span>
-                        <input type="text" name="username" class="form-control border-start-0 ps-0" placeholder="Masukkan username" required>
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <label class="form-label small fw-semibold text-secondary">Password Akun</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-key text-muted"></i></span>
-                        <input type="password" name="password" class="form-control border-start-0 ps-0" placeholder="••••••••" required>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-custom w-100 py-2 mb-3 shadow-sm">Masuk Sistem</button>
-            </form>
-            <div class="text-center">
-                <p class="text-muted small mb-0">Belum punya akun? <a href="/register" class="text-decoration-none fw-semibold text-dark">Daftar sekarang</a></p>
-            </div>
-        </div>
-    </div>
-</div>
+<div class="auth-wrap"><section class="card auth-card">
+  <div class="text-center mb-4"><div class="auth-mark"><i class="bi bi-heart-pulse-fill"></i></div><div class="eyebrow mb-2">Welcome back</div><h1 class="h3 fw-bold mb-2">Sign in to Health Vault</h1><p class="text-muted mb-0">Your personal health files, organized in one private place.</p></div>
+  <form method="POST"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="mb-3"><label for="username" class="form-label">Username</label><div class="input-group"><span class="input-group-text" style="background:#f5faf9;border-color:#d4e3e0;border-radius:11px 0 0 11px"><i class="bi bi-person text-muted"></i></span><input id="username" type="text" name="username" class="form-control" style="border-radius:0 11px 11px 0" placeholder="Enter your username" autocomplete="username" required></div></div>
+    <div class="mb-4"><label for="password" class="form-label">Account password</label><div class="input-group"><span class="input-group-text" style="background:#f5faf9;border-color:#d4e3e0;border-radius:11px 0 0 11px"><i class="bi bi-key text-muted"></i></span><input id="password" type="password" name="password" class="form-control" style="border-radius:0 11px 11px 0" placeholder="Enter your password" autocomplete="current-password" required></div></div>
+    <button type="submit" class="btn btn-primary-hv w-100 mb-3"><i class="bi bi-lock me-2"></i>Sign in securely</button>
+  </form>
+  <p class="text-center small text-muted mb-0">New to Health Vault? <a href="/register" class="small-link">Create an account</a></p>
+</section></div>
 {% endblock %}
