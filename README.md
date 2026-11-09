@@ -1,4 +1,4 @@
-# Secure Private Data Vault
+# Secure Private Data Health Vault
 **Information Security — Assignment 1**
 
 A Flask web application for registering, logging in, and storing files encrypted with **AES-GCM, DES-CBC, or RC4**. The project also includes a reproducible benchmark comparing these three algorithms and a technical report.
